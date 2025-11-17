@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Form Pembayaran Infaq</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Font Lexend -->
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background:#f3f4f6;
+        font-family: 'Lexend', sans-serif;
+        font-size:11px;
+    }
+    .card-custom {
+        max-width:500px;
+        margin:40px auto;
+        padding:25px;
+        border-radius:16px;
+        box-shadow:0 4px 20px rgba(0,0,0,0.1);
+        background:#fff;
+    }
+    .title {
+        text-align:center;
+        font-size:18px;
+        font-weight:600;
+        margin-bottom:20px;
+        color:#2b4eff;
+    }
+    #dropdown {
+        position:absolute;
+        background:#fff;
+        width:100%;
+        max-height:180px;
+        overflow-y:auto;
+        border:1px solid #ced4da;
+        z-index:10;
+        display:none;
+    }
+    .dropdown-item-custom {
+        padding:8px 12px;
+        cursor:pointer;
+    }
+    .dropdown-item-custom:hover {
+        background:#e8edff;
+    }
+    .logo {
+        width:90px;
+        display:block;
+        margin:0 auto 15px auto;
+    }
+</style>
+</head>
+<body>
+
+<div class="card-custom">
+
+    <!-- LOGO -->
+    <img src="PATH_LOGO_KAMU.png" class="logo" alt="Logo">
+
+    <div class="title">Form Pembayaran Infaq<br>Kuttab Mentoring</div>
+
+    <!-- Search box -->
+    <div id="searchContainer">
+        <label class="fw-semibold">Cari Nama Member</label>
+        <div class="position-relative mb-3">
+            <input id="searchInput" type="text" class="form-control" placeholder="Ketik nama..." onkeyup="filterNames()" onclick="showDropdown()">
+            <div id="dropdown"></div>
+        </div>
+    </div>
+
+    <!-- Form Data Diri -->
+    <div id="dataForm" style="display:none;">
+
+        <div class="mb-2">
+            <label class="fw-semibold">Nama Member</label>
+            <input id="f_nama" class="form-control" readonly>
+        </div>
+
+        <div class="mb-2">
+            <label class="fw-semibold">Nomor WhatsApp</label>
+            <input id="f_wa" class="form-control" readonly>
+        </div>
+
+        <div class="mb-2">
+            <label class="fw-semibold">Jenis Kelamin</label>
+            <input id="f_gender" class="form-control" readonly>
+        </div>
+
+        <div class="mb-2">
+            <label class="fw-semibold">Nomor Kelas</label>
+            <input id="f_kelas" class="form-control" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-semibold">Nama Mentor</label>
+            <input id="f_mentor" class="form-control" readonly>
+        </div>
+
+        <button class="btn btn-primary w-100" onclick="goToForm()">Lanjut Isi di Google Form</button>
+    </div>
+
+</div>
+
+<script>
+// ================================
+// LOAD DATA DARI GOOGLE SHEETS TSV
+// ================================
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJsoLmoRr2EWDG7b-vUI0DwEqtWb2RIlJgFY_oG0auz0KUd2P47g95dM3eyKn5Y1XMTfpiNlT3072j/pub?gid=0&single=true&output=tsv";
+
+let data = {};
+
+async function loadSheet() {
+    try {
+        const response = await fetch(sheetURL);
+        const text = await response.text();
+        const rows = text.split("\n").map(r => r.split("\t")); // TSV
+
+        // Asumsi kolom: Nama, WA, Gender, Kelas, Mentor
+        rows.slice(1).forEach(row => {
+            const nama = row[0]?.trim();
+            if (!nama) return;
+
+            data[nama] = [
+                row[1]?.trim() || "",
+                row[2]?.trim() || "",
+                row[3]?.trim() || "",
+                row[4]?.trim() || ""
+            ];
+        });
+
+        filterNames(); // refresh dropdown setelah data masuk
+    } catch (err) {
+        console.error("Gagal load data spreadsheet:", err);
+    }
+}
+
+loadSheet();
+
+// ================================
+// DROPDOWN DAN SEARCH
+// ================================
+const dropdown = document.getElementById("dropdown");
+const searchInput = document.getElementById("searchInput");
+
+function showDropdown() {
+    dropdown.style.display = "block";
+}
+
+function filterNames() {
+    if (!Object.keys(data).length) return; // data belum load
+    const keyword = searchInput.value.toLowerCase();
+    dropdown.innerHTML = "";
+
+    Object.keys(data)
+        .filter(name => name.toLowerCase().includes(keyword))
+        .forEach(name => {
+            const div = document.createElement("div");
+            div.className = "dropdown-item-custom";
+            div.innerText = name;
+            div.onclick = () => selectName(name);
+            dropdown.appendChild(div);
+        });
+
+    dropdown.style.display = dropdown.innerHTML ? "block" : "none";
+}
+
+function selectName(name) {
+    searchInput.value = name;
+    dropdown.style.display = "none";
+    document.getElementById("searchContainer").style.display = "none";
+
+    const [wa, gender, kelas, mentor] = data[name];
+
+    document.getElementById("f_nama").value = name;
+    document.getElementById("f_wa").value = wa;
+    document.getElementById("f_gender").value = gender;
+    document.getElementById("f_kelas").value = kelas;
+    document.getElementById("f_mentor").value = mentor;
+
+    document.getElementById("dataForm").style.display = "block";
+}
+
+// ================================
+// GOOGLE FORM REDIRECT
+// ================================
+function goToForm() {
+    const name = document.getElementById("f_nama").value;
+    const wa = document.getElementById("f_wa").value;
+    const gender = document.getElementById("f_gender").value;
+    const kelas = document.getElementById("f_kelas").value;
+    const mentor = document.getElementById("f_mentor").value;
+
+    const base = "https://docs.google.com/forms/d/e/1FAIpQLSfkgbijeu9hm5kzqjiQz6O70VgGH_i3PrbY2qWBZLHxhiDpng/viewform?usp=pp_url";
+
+    const url =
+        base +
+        "&entry.782238250=" + encodeURIComponent(name) +
+        "&entry.1003227427=" + encodeURIComponent(wa) +
+        "&entry.1363053932=" + encodeURIComponent(gender) +
+        "&entry.1556174616=" + encodeURIComponent(kelas) +
+        "&entry.1421539763=" + encodeURIComponent(mentor);
+
+    window.location.href = url;
+}
+</script>
+
+</body>
+</html>
