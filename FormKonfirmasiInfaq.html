@@ -108,15 +108,18 @@
 
 <script>
 // ================================
-// LOAD DATA DARI GOOGLE SHEETS TSV
+// LOAD DATA DARI GOOGLE SHEETS TSV DENGAN CORS PROXY
 // ================================
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJsoLmoRr2EWDG7b-vUI0DwEqtWb2RIlJgFY_oG0auz0KUd2P47g95dM3eyKn5Y1XMTfpiNlT3072j/pub?gid=0&single=true&output=tsv";
+
+// Gunakan CORS proxy supaya bisa diakses dari GitHub Pages
+const proxy = "https://cors-anywhere.herokuapp.com/"; // sementara untuk testing
 
 let data = {};
 
 async function loadSheet() {
     try {
-        const response = await fetch(sheetURL);
+        const response = await fetch(proxy + sheetURL);
         const text = await response.text();
         const rows = text.split("\n").map(r => r.split("\t")); // TSV
 
