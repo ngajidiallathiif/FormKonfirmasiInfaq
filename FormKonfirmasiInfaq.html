@@ -101,6 +101,9 @@ body {
 </div>
 
 <script>
+// ==================================
+// LOAD DATA GOOGLE SHEETS (TSV)
+// ==================================
 const sheetURL =
  "https://docs.google.com/spreadsheets/d/1X4GIh-qFjCWVDrbNOYvFXQqQtDrcafgQCRlOe2LJCWM/export?format=tsv&gid=0";
 
@@ -133,6 +136,9 @@ async function loadSheet() {
 
 loadSheet();
 
+// ==================================
+// DROPDOWN & SEARCH
+// ==================================
 const dropdown = document.getElementById("dropdown");
 const searchInput = document.getElementById("searchInput");
 
@@ -159,6 +165,9 @@ function filterNames() {
     dropdown.style.display = dropdown.innerHTML ? "block" : "none";
 }
 
+// ==================================
+// PILIH NAMA
+// ==================================
 function selectName(name) {
     searchInput.value = name;
     dropdown.style.display = "none";
@@ -175,6 +184,34 @@ function selectName(name) {
     document.getElementById("dataForm").style.display = "block";
 }
 
+// ==================================
+// FITUR SOLUSI 2: BISA PILIH ULANG
+// ==================================
+searchInput.addEventListener("input", enableReselect);
+searchInput.addEventListener("click", enableReselect);
+
+function enableReselect() {
+    // tampilkan kembali search box
+    document.getElementById("searchContainer").style.display = "block";
+
+    // sembunyikan form data
+    document.getElementById("dataForm").style.display = "none";
+
+    // kosongkan form isi otomatis
+    document.getElementById("f_nama").value = "";
+    document.getElementById("f_wa").value = "";
+    document.getElementById("f_gender").value = "";
+    document.getElementById("f_kelas").value = "";
+    document.getElementById("f_mentor").value = "";
+
+    // buka dropdown list lagi
+    showDropdown();
+    filterNames();
+}
+
+// ==================================
+// REDIRECT GOOGLE FORM
+// ==================================
 function goToForm() {
     const name = document.getElementById("f_nama").value;
     const wa = document.getElementById("f_wa").value;
