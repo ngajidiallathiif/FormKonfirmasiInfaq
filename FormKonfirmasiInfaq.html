@@ -4,126 +4,114 @@
 <meta charset="UTF-8">
 <title>Form Pembayaran Infaq</title>
 
-<!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Font Lexend -->
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-    body {
-        background:#f3f4f6;
-        font-family: 'Lexend', sans-serif;
-        font-size:11px;
-    }
-    .card-custom {
-        max-width:500px;
-        margin:40px auto;
-        padding:25px;
-        border-radius:16px;
-        box-shadow:0 4px 20px rgba(0,0,0,0.1);
-        background:#fff;
-    }
-    .title {
-        text-align:center;
-        font-size:18px;
-        font-weight:600;
-        margin-bottom:20px;
-        color:#2b4eff;
-    }
-    #dropdown {
-        position:absolute;
-        background:#fff;
-        width:100%;
-        max-height:180px;
-        overflow-y:auto;
-        border:1px solid #ced4da;
-        z-index:10;
-        display:none;
-    }
-    .dropdown-item-custom {
-        padding:8px 12px;
-        cursor:pointer;
-    }
-    .dropdown-item-custom:hover {
-        background:#e8edff;
-    }
-    .logo {
-        width:90px;
-        display:block;
-        margin:0 auto 15px auto;
-    }
+body {
+    background:#f3f4f6;
+    font-family: 'Lexend', sans-serif;
+    font-size:11px;
+}
+.card-custom {
+    max-width:500px;
+    margin:40px auto;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.1);
+    background:#fff;
+}
+.title {
+    text-align:center;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:20px;
+    color:#2b4eff;
+}
+#dropdown {
+    position:absolute;
+    background:#fff;
+    width:100%;
+    max-height:180px;
+    overflow-y:auto;
+    border:1px solid #ced4da;
+    z-index:10;
+    display:none;
+}
+.dropdown-item-custom {
+    padding:8px 12px;
+    cursor:pointer;
+}
+.dropdown-item-custom:hover {
+    background:#e8edff;
+}
+.logo {
+    width:90px;
+    display:block;
+    margin:0 auto 15px auto;
+}
 </style>
 </head>
 <body>
 
 <div class="card-custom">
 
-    <!-- LOGO -->
-    <img src="PATH_LOGO_KAMU.png" class="logo" alt="Logo">
+<img src="PATH_LOGO_KAMU.png" class="logo" alt="Logo">
 
-    <div class="title">Form Pembayaran Infaq<br>Kuttab Mentoring</div>
+<div class="title">Form Pembayaran Infaq<br>Kuttab Mentoring</div>
 
-    <!-- Search box -->
-    <div id="searchContainer">
-        <label class="fw-semibold">Cari Nama Member</label>
-        <div class="position-relative mb-3">
-            <input id="searchInput" type="text" class="form-control" placeholder="Ketik nama..." onkeyup="filterNames()" onclick="showDropdown()">
-            <div id="dropdown"></div>
-        </div>
+<div id="searchContainer">
+    <label class="fw-semibold">Cari Nama Member</label>
+    <div class="position-relative mb-3">
+        <input id="searchInput" type="text" class="form-control" placeholder="Ketik nama..." onkeyup="filterNames()" onclick="showDropdown()">
+        <div id="dropdown"></div>
+    </div>
+</div>
+
+<div id="dataForm" style="display:none;">
+
+    <div class="mb-2">
+        <label class="fw-semibold">Nama Member</label>
+        <input id="f_nama" class="form-control" readonly>
     </div>
 
-    <!-- Form Data Diri -->
-    <div id="dataForm" style="display:none;">
-
-        <div class="mb-2">
-            <label class="fw-semibold">Nama Member</label>
-            <input id="f_nama" class="form-control" readonly>
-        </div>
-
-        <div class="mb-2">
-            <label class="fw-semibold">Nomor WhatsApp</label>
-            <input id="f_wa" class="form-control" readonly>
-        </div>
-
-        <div class="mb-2">
-            <label class="fw-semibold">Jenis Kelamin</label>
-            <input id="f_gender" class="form-control" readonly>
-        </div>
-
-        <div class="mb-2">
-            <label class="fw-semibold">Nomor Kelas</label>
-            <input id="f_kelas" class="form-control" readonly>
-        </div>
-
-        <div class="mb-3">
-            <label class="fw-semibold">Nama Mentor</label>
-            <input id="f_mentor" class="form-control" readonly>
-        </div>
-
-        <button class="btn btn-primary w-100" onclick="goToForm()">Lanjut Isi di Google Form</button>
+    <div class="mb-2">
+        <label class="fw-semibold">Nomor WhatsApp</label>
+        <input id="f_wa" class="form-control" readonly>
     </div>
+
+    <div class="mb-2">
+        <label class="fw-semibold">Jenis Kelamin</label>
+        <input id="f_gender" class="form-control" readonly>
+    </div>
+
+    <div class="mb-2">
+        <label class="fw-semibold">Nomor Kelas</label>
+        <input id="f_kelas" class="form-control" readonly>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-semibold">Nama Mentor</label>
+        <input id="f_mentor" class="form-control" readonly>
+    </div>
+
+    <button class="btn btn-primary w-100" onclick="goToForm()">Lanjut Isi di Google Form</button>
+</div>
 
 </div>
 
 <script>
-// ================================
-// LOAD DATA DARI GOOGLE SHEETS TSV DENGAN CORS PROXY
-// ================================
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJsoLmoRr2EWDG7b-vUI0DwEqtWb2RIlJgFY_oG0auz0KUd2P47g95dM3eyKn5Y1XMTfpiNlT3072j/pub?gid=0&single=true&output=tsv";
+const sheetURL =
+ "https://docs.google.com/spreadsheets/d/1X4GIh-qFjCWVDrbNOYvFXQqQtDrcafgQCRlOe2LJCWM/export?format=tsv&gid=0";
 
-// Gunakan CORS proxy supaya bisa diakses dari GitHub Pages
-const proxy = "https://cors-anywhere.herokuapp.com/"; // sementara untuk testing
-
-let data = {};
+let data = {}; 
 
 async function loadSheet() {
     try {
-        const response = await fetch(proxy + sheetURL);
+        const response = await fetch(sheetURL);
         const text = await response.text();
-        const rows = text.split("\n").map(r => r.split("\t")); // TSV
+        const rows = text.trim().split("\n").map(r => r.split("\t"));
 
-        // Asumsi kolom: Nama, WA, Gender, Kelas, Mentor
         rows.slice(1).forEach(row => {
             const nama = row[0]?.trim();
             if (!nama) return;
@@ -136,17 +124,15 @@ async function loadSheet() {
             ];
         });
 
-        filterNames(); // refresh dropdown setelah data masuk
+        filterNames();
+
     } catch (err) {
-        console.error("Gagal load data spreadsheet:", err);
+        console.error("Gagal load data:", err);
     }
 }
 
 loadSheet();
 
-// ================================
-// DROPDOWN DAN SEARCH
-// ================================
 const dropdown = document.getElementById("dropdown");
 const searchInput = document.getElementById("searchInput");
 
@@ -155,19 +141,20 @@ function showDropdown() {
 }
 
 function filterNames() {
-    if (!Object.keys(data).length) return; // data belum load
+    if (!Object.keys(data).length) return;
+
     const keyword = searchInput.value.toLowerCase();
     dropdown.innerHTML = "";
 
     Object.keys(data)
-        .filter(name => name.toLowerCase().includes(keyword))
-        .forEach(name => {
-            const div = document.createElement("div");
-            div.className = "dropdown-item-custom";
-            div.innerText = name;
-            div.onclick = () => selectName(name);
-            dropdown.appendChild(div);
-        });
+    .filter(name => name.toLowerCase().includes(keyword))
+    .forEach(name => {
+        const div = document.createElement("div");
+        div.className = "dropdown-item-custom";
+        div.innerText = name;
+        div.onclick = () => selectName(name);
+        dropdown.appendChild(div);
+    });
 
     dropdown.style.display = dropdown.innerHTML ? "block" : "none";
 }
@@ -188,9 +175,6 @@ function selectName(name) {
     document.getElementById("dataForm").style.display = "block";
 }
 
-// ================================
-// GOOGLE FORM REDIRECT
-// ================================
 function goToForm() {
     const name = document.getElementById("f_nama").value;
     const wa = document.getElementById("f_wa").value;
